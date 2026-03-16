@@ -459,6 +459,13 @@ def prepare_simulation():
                 "success": False,
                 "error": "项目缺少模拟需求描述 (simulation_requirement)"
             }), 400
+
+        llm_config_errors = Config.validate_llm_settings()
+        if llm_config_errors:
+            return jsonify({
+                "success": False,
+                "error": "LLM 配置有误: " + "；".join(llm_config_errors)
+            }), 400
         
         # 获取文档文本
         document_text = ProjectManager.get_extracted_text(state.project_id) or ""

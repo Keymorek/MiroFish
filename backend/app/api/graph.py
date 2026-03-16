@@ -162,6 +162,13 @@ def generate_ontology():
                 "success": False,
                 "error": "请提供模拟需求描述 (simulation_requirement)"
             }), 400
+
+        llm_config_errors = Config.validate_llm_settings()
+        if llm_config_errors:
+            return jsonify({
+                "success": False,
+                "error": "LLM 配置有误: " + "；".join(llm_config_errors)
+            }), 400
         
         # 获取上传的文件
         uploaded_files = request.files.getlist('files')

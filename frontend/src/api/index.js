@@ -35,6 +35,11 @@ service.interceptors.response.use(
   },
   error => {
     console.error('Response error:', error)
+
+    const backendMessage = error.response?.data?.error || error.response?.data?.message
+    if (backendMessage) {
+      error.message = backendMessage
+    }
     
     // 处理超时
     if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
@@ -44,6 +49,7 @@ service.interceptors.response.use(
     // 处理网络错误
     if (error.message === 'Network Error') {
       console.error('Network error - please check your connection')
+      error.message = '无法连接后端服务，请检查后端是否正常运行，或浏览器是否拦截了该请求'
     }
     
     return Promise.reject(error)
